@@ -116,16 +116,16 @@ EOT;
         'key' => 'value',
     ],
 ]
-EOT,
-                [['key' => 'value']]
+EOT
+                , [['key' => 'value']]
             ],
             [
                 <<<EOT
 [
     1,
 ]
-EOT,
-                [1],
+EOT
+                , [1],
             ],
             [
                 <<<EOT
@@ -135,8 +135,8 @@ EOT,
         [],
     ],
 ]
-EOT,
-                [[1,[]]],
+EOT
+                , [[1,[]]],
             ],
             ['\ArrayObject::__set_state([])', new \ArrayObject()],
             ['(object)[]', new \stdClass()],
@@ -150,8 +150,8 @@ EOT,
         ],
     ],
 ]
-EOT,
-                (object)['key' => [], 'other' => [(object)['x' => -1]]],
+EOT
+                , (object)['key' => [], 'other' => [(object)['x' => -1]]],
             ],
         ];
     }
