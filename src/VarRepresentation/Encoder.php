@@ -177,8 +177,9 @@ class Encoder {
         "\n" => '\n',
         "\t" => '\t',
         "\r" => '\r',
-        "\v" => '\v',
-        "\f" => '\f',
+        '"' => '\"',
+        '\\' => '\\\\',
+        '$' => '\$',
     ];
 
     /**
@@ -200,11 +201,11 @@ class Encoder {
             return new Group([$prefix]);
         }
         $representation = '"' . preg_replace_callback(
-            '/[\\x00-\\x1f\\x7f-\xff\\\\\'"$]/',
+            '/[\\x00-\\x1f\\x7f-\xff\\\\"$]/',
             /** @param array{0:string} $match */
             static function (array $match): string {
                 $char = $match[0];
-                return self::CHAR_LOOKUP[$char] ?? sprintf('\%03o', ord($char));
+                return self::CHAR_LOOKUP[$char] ?? sprintf('\x%02x', ord($char));
             },
             $unescaped_str
         ) . '"';
