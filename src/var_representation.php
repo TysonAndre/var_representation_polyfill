@@ -25,16 +25,17 @@
 
 use VarRepresentation\Encoder;
 
-/**
- * Convert a variable to a string in a way that fixes the shortcomings of `var_export()`.
- *
- * @param mixed $value
- */
-function var_representation($value): string {
-    $raw_string = var_export($value, true);
-    if (!function_exists('token_get_all')) {
-        return $raw_string;
+if (!function_exists('var_representation')) {
+    /**
+     * Convert a variable to a string in a way that fixes the shortcomings of `var_export()`.
+     *
+     * @param mixed $value
+     * @param int $flags bitmask of flags (VAR_REPRESENTATION_SINGLE_LINE)
+     */
+    function var_representation($value, int $flags = 0): string {
+        return Encoder::toVarRepresentation($value, $flags);
     }
-
-    return Encoder::toVarRepresentation($raw_string);
+}
+if (!defined('VAR_REPRESENTATION_SINGLE_LINE')) {
+    define('VAR_REPRESENTATION_SINGLE_LINE', 1);
 }

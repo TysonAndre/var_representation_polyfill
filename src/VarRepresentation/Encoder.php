@@ -45,22 +45,32 @@ class Encoder {
 
     /**
      * Generate a readable var_representation from the original var_export output
+     * @param mixed $value
+     * @param int $flags bitmask of flags (VAR_REPRESENTATION_SINGLE_LINE)
      */
-    public static function toVarRepresentation(string $raw_string): string
+    public static function toVarRepresentation($value, int $flags = 0): string
     {
-        return (new self($raw_string))->encode();
+        $raw_string = var_export($value, true);
+        if (!function_exists('token_get_all')) {
+            return $raw_string;
+        }
+
+        return (new self($raw_string))->encode($flags);
     }
 
     /**
      * Encode the entire sequence of tokens
      */
-    protected function encode(): string
+    protected function encode(int $flags): string
     {
         $result = $this->encodeValue();
         if ($this->i !== count($this->tokens) + 1) {
             throw new RuntimeException("Failed to read token #$this->i of $this->raw: " . var_export($this->tokens[$this->i] ?? null, true));
         }
-        return $result->__toString();
+        if ($flags & VAR_REPRESENTATION_SINGLE_LINE) {
+            return $result->__toString();
+        }
+        return $result->toIndentedString(0);
     }
 
     /**

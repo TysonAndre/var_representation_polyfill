@@ -34,6 +34,14 @@ class Group extends Node {
         return new self($parts);
     }
 
+    public function toIndentedString(int $depth): string
+    {
+        $result = '';
+        foreach ($this->parts as $part) {
+            $result .= is_string($part) ? $part : $part->toIndentedString($depth);
+        }
+        return $result;
+    }
     public function __toString(): string
     {
         return implode('', $this->parts);

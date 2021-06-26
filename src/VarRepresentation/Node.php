@@ -10,9 +10,6 @@ abstract class Node {
     public abstract function __toString(): string;
     /**
      * Convert this to an indented string
-     * @unused-param $depth
      */
-    public function toIndentedString(int $depth): string {
-        return $this->__toString();
-    }
+    public abstract function toIndentedString(int $depth): string;
 }

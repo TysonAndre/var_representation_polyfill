@@ -1,0 +1,10 @@
+# Files and directories with the attribute export-ignore won't be added to archive files
+# (such as zips/tarballs in GitHub Releases)
+/.appveyor.yml     export-ignore
+/.gitattributes    export-ignore
+/.gitignore        export-ignore
+/.github           export-ignore
+/phpcs.xml         export-ignore
+/phpunit.xml       export-ignore
+/tests             export-ignore
+/.editorconfig     export-ignore

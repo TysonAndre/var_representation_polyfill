@@ -22,4 +22,9 @@ class ArrayEntry extends Node {
     {
         return $this->key->__toString() . ' => ' . $this->value->__toString();
     }
+
+    public function toIndentedString(int $depth): string
+    {
+        return $this->key->__toString() . ' => ' . $this->value->toIndentedString($depth);
+    }
 }

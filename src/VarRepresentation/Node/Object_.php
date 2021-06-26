@@ -16,9 +16,14 @@ class Object_ extends Node {
     protected $suffix;
 
     public function __construct(string $prefix, Array_ $array, string $suffix) {
-        $this->prefix = $prefix;
+        if ($prefix === 'stdClass::__set_state(') {
+            $this->prefix = '(object)';
+            $this->suffix = '';
+        } else {
+            $this->prefix = '\\' . $prefix;
+            $this->suffix = $suffix;
+        }
         $this->array = $array;
-        $this->suffix = $suffix;
     }
 
     public function __toString(): string
@@ -26,6 +31,11 @@ class Object_ extends Node {
         if ($this->prefix === 'stdClass::__set_state(') {
             return '(object)' . $this->array;
         }
-        return '\\' . $this->prefix . $this->array->__toString() . $this->suffix;
+        return $this->prefix . $this->array->__toString() . $this->suffix;
+    }
+
+    public function toIndentedString(int $depth): string
+    {
+        return $this->prefix . $this->array->toIndentedString($depth) . $this->suffix;
     }
 }
