@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace VarRepresentation\Tests;
 
-use Phan\Config;
 use PHPUnit\Framework\TestCase;
 
 use function var_representation;
@@ -20,18 +19,35 @@ class VarRepresentationTest extends TestCase
         $this->assertSame($expected, var_representation($value));
     }
 
-    public function testVarRepresentation(): void {
-        $this->assertVarRepresentationIs('1', 1);
-        $this->assertVarRepresentationIs('0', 0);
-        $this->assertVarRepresentationIs('null', null);
-        $this->assertVarRepresentationIs('true', true);
-        $this->assertVarRepresentationIs('false', false);
-        $this->assertVarRepresentationIs("''", '');
-        $this->assertVarRepresentationIs("'1'", '1');
-        $this->assertVarRepresentationIs('"\\0"', "\0");
+    /**
+     * @dataProvider varRepresentationProvider
+     */
+    public function testVarRepresentation(string $expected, $value): void {
+        $this->assertSame($expected, var_representation($value));
     }
 
-    public function testVarRepresentationArray(): void {
-        $this->assertVarRepresentationIs("[]", []);
+    /**
+     * @return list<array{0:string,1:mixed}>
+     */
+    public function varRepresentationProvider(): array
+    {
+        return [
+            ['1', 1],
+            ['-1', -1],
+            [var_export(PHP_INT_MIN, true), PHP_INT_MIN],
+            ['0', 0],
+            ['null', null],
+            ['true', true],
+            ['false', false],
+            ["''", ''],
+            ["'1'", '1'],
+            ['"\\000"', "\0"],
+            ['"\\000\\000"', "\0\0"],
+            ["'\$var'", '$var'],
+            ['[]', []],
+            ['ArrayObject::__set_state([])', new \ArrayObject()],
+            // ['(object)[]', new \stdClass()],
+            // ['[1]', [1]],
+        ];
     }
 }
