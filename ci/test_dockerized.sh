@@ -13,4 +13,5 @@ PHP_VERSION=$1
 
 DOCKER_IMAGE=igbinary-$PHP_VERSION-test-runner
 docker build --build-arg="PHP_VERSION=$PHP_VERSION" --tag="$DOCKER_IMAGE" -f ci/Dockerfile .
-docker run --rm $DOCKER_IMAGE ci/test_inner.sh
+docker run --rm $DOCKER_IMAGE vendor/bin/phpunit
+docker run --rm $DOCKER_IMAGE vendor/bin/phan

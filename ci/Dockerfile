@@ -15,5 +15,3 @@ ADD src ./src
 ADD .phan ./.phan
 ADD tests ./tests
 ADD phpunit.xml ./
-RUN vendor/bin/phpunit
-RUN vendor/bin/phan

@@ -44,11 +44,5 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: Install
-        run: composer validate; composer install
-
-      - name: Test
-        run: vendor/bin/phpunit
-
-      - name: Analyze
-        run: vendor/bin/phan
+      - name: Build and test in docker
+        run: bash ci/test_dockerized.sh ${{ matrix.PHP_VERSION }}
