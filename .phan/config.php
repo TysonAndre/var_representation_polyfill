@@ -580,6 +580,7 @@ return [
         'RemoveDebugStatementPlugin',
         'UnsafeCodePlugin',
         'DeprecateAliasPlugin',
+        'NotFullyQualifiedUsagePlugin',
         // Still have false positives to suppress
         // '.phan/plugins/StaticVariableMisusePlugin.php',
 

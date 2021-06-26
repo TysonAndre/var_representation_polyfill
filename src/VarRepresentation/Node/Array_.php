@@ -38,20 +38,20 @@ class Array_ extends Node {
     public function __toString(): string
     {
         // TODO check if list
-        $inner = implode(', ', $this->getValuesOrEntries());
+        $inner = \implode(', ', $this->getValuesOrEntries());
         return '[' . $inner . ']';
     }
 
     public function toIndentedString(int $depth): string
     {
         $parts = $this->getValuesOrEntries();
-        if (count($parts) === 0) {
+        if (\count($parts) === 0) {
             return '[]';
         }
         $representation = "[\n";
         foreach ($parts as $part) {
-            $representation .= str_repeat('    ', $depth + 1) . $part->toIndentedString($depth + 1) . ",\n";
+            $representation .= \str_repeat('    ', $depth + 1) . $part->toIndentedString($depth + 1) . ",\n";
         }
-        return $representation . str_repeat('    ', $depth) . "]";
+        return $representation . \str_repeat('    ', $depth) . "]";
     }
 }

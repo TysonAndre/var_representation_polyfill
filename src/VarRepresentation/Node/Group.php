@@ -16,7 +16,7 @@ class Group extends Node {
      * @param list<string|node> $parts
      */
     public function __construct(array $parts) {
-        if (count($parts) === 0) {
+        if (\count($parts) === 0) {
             throw new RuntimeException(__METHOD__ . ' passed no parts');
         }
         $this->parts = $parts;
@@ -28,7 +28,7 @@ class Group extends Node {
      */
     public static function fromParts(array $parts): Node
     {
-        if (count($parts) === 1 && $parts[0] instanceof Node) {
+        if (\count($parts) === 1 && $parts[0] instanceof Node) {
             return $parts[0];
         }
         return new self($parts);
@@ -38,12 +38,12 @@ class Group extends Node {
     {
         $result = '';
         foreach ($this->parts as $part) {
-            $result .= is_string($part) ? $part : $part->toIndentedString($depth);
+            $result .= \is_string($part) ? $part : $part->toIndentedString($depth);
         }
         return $result;
     }
     public function __toString(): string
     {
-        return implode('', $this->parts);
+        return \implode('', $this->parts);
     }
 }

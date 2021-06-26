@@ -24,7 +24,7 @@ class Encoder {
 
     protected function __construct(string $raw) {
         $this->tokens = self::getTokensWithoutWhitespace($raw);
-        $this->endIndex = count($this->tokens);
+        $this->endIndex = \count($this->tokens);
         $this->raw = $raw;
         unset($this->tokens[0]);
     }
@@ -36,11 +36,11 @@ class Encoder {
     public static function getTokensWithoutWhitespace(string $raw): array  {
         $tokens = \token_get_all('<?php ' . $raw);
         foreach ($tokens as $i => $token) {
-            if (is_array($token) && $token[0] === T_WHITESPACE) {
+            if (\is_array($token) && $token[0] === \T_WHITESPACE) {
                 unset($tokens[$i]);
             }
         }
-        return array_values($tokens);
+        return \array_values($tokens);
     }
 
     /**
@@ -50,8 +50,8 @@ class Encoder {
      */
     public static function toVarRepresentation($value, int $flags = 0): string
     {
-        $raw_string = var_export($value, true);
-        if (!function_exists('token_get_all')) {
+        $raw_string = \var_export($value, true);
+        if (!\function_exists('token_get_all')) {
             return $raw_string;
         }
 
@@ -64,10 +64,10 @@ class Encoder {
     protected function encode(int $flags): string
     {
         $result = $this->encodeValue();
-        if ($this->i !== count($this->tokens) + 1) {
-            throw new RuntimeException("Failed to read token #$this->i of $this->raw: " . var_export($this->tokens[$this->i] ?? null, true));
+        if ($this->i !== \count($this->tokens) + 1) {
+            throw new RuntimeException("Failed to read token #$this->i of $this->raw: " . \var_export($this->tokens[$this->i] ?? null, true));
         }
-        if ($flags & VAR_REPRESENTATION_SINGLE_LINE) {
+        if ($flags & \VAR_REPRESENTATION_SINGLE_LINE) {
             return $result->__toString();
         }
         return $result->toIndentedString(0);
@@ -104,7 +104,7 @@ class Encoder {
         $values = [];
         while (true) {
             $token = $this->peekToken();
-            if (is_string($token)) {
+            if (\is_string($token)) {
                 if ($token === ',') {
                     if (!$values) {
                         throw new RuntimeException("Unexpected token '$token', expected expression in $this->raw at token #$this->i");
@@ -116,7 +116,7 @@ class Encoder {
                 }
                 $this->i++;
                 if ($token === '(') {
-                    return $this->encodeObject(implode('', $values) . '(');
+                    return $this->encodeObject(\implode('', $values) . '(');
                 }
                 // TODO: Handle `*` in *RECURSION*, `-`, etc
                 $values[] = $token;
@@ -124,20 +124,20 @@ class Encoder {
                 $this->i++;
                 // TODO: Handle PHP_INT_MIN as a multi-part expression, strings, etc
                 switch ($token[0]) {
-                    case T_DOUBLE_ARROW:
+                    case \T_DOUBLE_ARROW:
                         $this->i--;
                         break 2;
-                    case T_CONSTANT_ENCAPSED_STRING:
+                    case \T_CONSTANT_ENCAPSED_STRING:
                         $values[] = $this->encodeString($token[1]);
                         break;
-                    case T_ARRAY:
+                    case \T_ARRAY:
                         $next = $this->getToken();
                         if ($next !== '(') {
                             throw $this->createUnexpectedTokenException("'('", $next);
                         }
                         $values[] = $this->encodeArray();
                         break;
-                    case T_STRING:
+                    case \T_STRING:
                         switch ($token[1]) {
                         case 'NULL';
                             $values[] = 'null';
@@ -170,7 +170,7 @@ class Encoder {
         if ($value === '"\0"') {
             return "\0";
         }
-        return preg_replace('/\\\\([\'\\\\])/', '\1', (string)substr($value, 1, -1));
+        return \preg_replace('/\\\\([\'\\\\])/', '\1', (string)\substr($value, 1, -1));
     }
 
     private const CHAR_LOOKUP = [
@@ -191,21 +191,21 @@ class Encoder {
         while ($this->i < $this->endIndex && $this->peekToken() === '.') {
             $this->i++;
             $token = $this->getToken();
-            if (!is_array($token) || $token[0] !== T_CONSTANT_ENCAPSED_STRING) {
+            if (!\is_array($token) || $token[0] !== \T_CONSTANT_ENCAPSED_STRING) {
                 throw $this->createUnexpectedTokenException('T_CONSTANT_ENCAPSED_STRING', $token);
             }
             $unescaped_str .= self::unescapeStringRepresentation($token[1]);
         }
-        if (!preg_match('/[\\x00-\\x1f\\x7f-\xff]/', $unescaped_str)) {
+        if (!\preg_match('/[\\x00-\\x1f\\x7f-\xff]/', $unescaped_str)) {
             // This does not have '"\0"', so it is already a single quoted string
             return new Group([$prefix]);
         }
-        $representation = '"' . preg_replace_callback(
+        $representation = '"' . \preg_replace_callback(
             '/[\\x00-\\x1f\\x7f-\xff\\\\"$]/',
             /** @param array{0:string} $match */
             static function (array $match): string {
                 $char = $match[0];
-                return self::CHAR_LOOKUP[$char] ?? sprintf('\x%02x', ord($char));
+                return self::CHAR_LOOKUP[$char] ?? \sprintf('\x%02x', \ord($char));
             },
             $unescaped_str
         ) . '"';
@@ -225,7 +225,7 @@ class Encoder {
             }
             $key = $this->encodeValue();
             $token = $this->getToken();
-            if (!is_array($token) || $token[0] !== T_DOUBLE_ARROW) {
+            if (!\is_array($token) || $token[0] !== \T_DOUBLE_ARROW) {
                 throw $this->createUnexpectedTokenException("'=>'", $token);
             }
             $value = $this->encodeValue();
@@ -245,7 +245,7 @@ class Encoder {
      */
     private function createUnexpectedTokenException(string $expected, $token): RuntimeException
     {
-        return new RuntimeException("Expected $expected but got " . var_export($token, true) . ' in ' . $this->raw);
+        return new RuntimeException("Expected $expected but got " . \var_export($token, true) . ' in ' . $this->raw);
     }
 
 
@@ -254,7 +254,7 @@ class Encoder {
      */
     protected function encodeObject(string $prefix): Object_ {
         $token = $this->getToken();
-        if (!is_array($token) || $token[0] !== T_ARRAY) {
+        if (!\is_array($token) || $token[0] !== \T_ARRAY) {
             throw $this->createUnexpectedTokenException('T_ARRAY', $token);
         }
         $token = $this->getToken();

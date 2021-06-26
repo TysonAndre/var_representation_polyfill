@@ -6,6 +6,7 @@ namespace VarRepresentation\Tests;
 
 use PHPUnit\Framework\TestCase;
 use VarRepresentation\Encoder;
+use stdClass;
 
 use function var_representation;
 
@@ -66,6 +67,23 @@ class VarRepresentationTest extends TestCase
      */
     public function testVarRepresentationIndented(string $expected, $value): void {
         $this->assertVarRepresentationIs($expected, $value, 0);
+    }
+
+    /**
+     * @dataProvider varRepresentationIndentedProvider
+     */
+    public function testVarRepresentationCircular(string $expected, $value): void {
+        $o = new stdClass();
+        $o->o = $o;
+        $o->other = 123;
+        $expected = <<<EOT
+(object)[
+    'o' => null,
+    'other' => 123,
+]
+EOT;
+        $this->assertSame($expected, @var_representation($o));
+        $this->assertSame("(object)['o' => null, 'other' => 123]", @var_representation($o, VAR_REPRESENTATION_SINGLE_LINE));
     }
 
     /**
