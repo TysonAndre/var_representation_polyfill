@@ -19,6 +19,7 @@
         "ext-tokenizer": "*"
     },
     "require-dev": {
+        "phan/phan": "^4.0",
         "phpunit/phpunit": "^8.5.0"
     },
     "autoload": {
