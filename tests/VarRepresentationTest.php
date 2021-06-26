@@ -27,6 +27,9 @@ class VarRepresentationTest extends TestCase
     public function testVarRepresentation(string $expected, $value): void
     {
         $this->assertVarRepresentationIs($expected, $value, VAR_REPRESENTATION_SINGLE_LINE);
+        if (is_string($value)) {
+            $this->assertSame($expected, Encoder::encodeRawString($value));
+        }
     }
 
     /**
@@ -155,4 +158,27 @@ EOT
             ],
         ];
     }
+
+    /**
+     * @dataProvider encodeStringProvider
+     */
+    public function testEncodeString(string $expected_double_quoted, ?string $expected_quoted, string $raw): void
+    {
+        $this->assertSame($expected_double_quoted, Encoder::encodeRawStringDoubleQuoted($raw));
+        $this->assertSame($expected_quoted ?? $expected_double_quoted, Encoder::encodeRawString($raw));
+    }
+
+    /**
+     * @return list<array{0:string,1?:string,2:string}>
+     */
+    public function encodeStringProvider(): array
+    {
+        return [
+            ['""', "''", ''],
+            ['"a"', "'a'", 'a'],
+            ['"\$\""', "'$\"'", '$"'],
+            ['"\x00"', null, "\0"],
+        ];
+    }
+
 }
