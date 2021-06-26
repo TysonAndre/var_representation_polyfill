@@ -3,6 +3,7 @@
     "description": "Polyfill for var_representation",
     "keywords": ["var_export", "var_representation"],
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Tyson Andre"
