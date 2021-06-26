@@ -3,6 +3,7 @@ var_representation_polyfill
 
 [![Build Status](https://github.com/TysonAndre/var_representation_polyfill/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/TysonAndre/var_representation_polyfill/actions/workflows/main.yml?query=branch%3Amain)
 [![License](https://img.shields.io/github/license/TysonAndre/var_representation_polyfill.svg)](https://github.com/TysonAndre/var_representation_polyfill/blob/main/LICENSE)
+[![Latest Stable Version](https://img.shields.io/github/v/release/TysonAndre/var_representation_polyfill.svg)](https://packagist.org/packages/TysonAndre/var_representation_polyfill)
 
 [var_representation_polyfill](https://github.com/TysonAndre/var_representation_polyfill) is a polyfill for https://pecl.php.net/var_representation
 
