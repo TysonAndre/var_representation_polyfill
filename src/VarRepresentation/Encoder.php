@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VarRepresentation;
 
 use RuntimeException;
-
 use VarRepresentation\Node\Array_;
 use VarRepresentation\Node\ArrayEntry;
 use VarRepresentation\Node\Group;
@@ -12,7 +13,8 @@ use VarRepresentation\Node\Object_;
 /**
  * Encodes var_export output into var_representation() output
  */
-class Encoder {
+class Encoder
+{
     /** @var list<string|array{0:int,1:string,2:int}> the raw tokens from token_get_all */
     protected $tokens;
     /** @var int the last valid index */
@@ -22,7 +24,8 @@ class Encoder {
     /** @var int the current offset */
     protected $i = 1;
 
-    protected function __construct(string $raw) {
+    protected function __construct(string $raw)
+    {
         $this->tokens = self::getTokensWithoutWhitespace($raw);
         $this->endIndex = \count($this->tokens);
         $this->raw = $raw;
@@ -33,7 +36,8 @@ class Encoder {
      * Get tokens without T_WHITESPACE tokens
      * @return list<string|array{0:int,1:string,2:int}>
      */
-    public static function getTokensWithoutWhitespace(string $raw): array  {
+    public static function getTokensWithoutWhitespace(string $raw): array
+    {
         $tokens = \token_get_all('<?php ' . $raw);
         foreach ($tokens as $i => $token) {
             if (\is_array($token) && $token[0] === \T_WHITESPACE) {
@@ -77,7 +81,8 @@ class Encoder {
      * Read the current token and advance
      * @return string|array{0:int,1:string,2:int}
      */
-    private function getToken() {
+    private function getToken()
+    {
         $token = $this->tokens[$this->i++];
         if ($token === null) {
             throw new RuntimeException("Unexpected end of tokens in $this->raw");
@@ -89,7 +94,8 @@ class Encoder {
      * Read the current token without advancing
      * @return string|array{0:int,1:string,2:int}
      */
-    private function peekToken() {
+    private function peekToken()
+    {
         $token = $this->tokens[$this->i];
         if ($token === null) {
             throw new RuntimeException("Unexpected end of tokens in $this->raw");
@@ -100,7 +106,8 @@ class Encoder {
     /**
      * Convert a expression representation to the readable representation
      */
-    protected function encodeValue(): Node {
+    protected function encodeValue(): Node
+    {
         $values = [];
         while (true) {
             $token = $this->peekToken();
@@ -139,8 +146,8 @@ class Encoder {
                         break;
                     case \T_STRING:
                         switch ($token[1]) {
-                        case 'NULL';
-                            $values[] = 'null';
+                            case 'NULL';
+                                $values[] = 'null';
                             break 2;
                             /*
                         case 'stdClass':
@@ -215,7 +222,8 @@ class Encoder {
     /**
      * Encode an array
      */
-    protected function encodeArray(): Array_ {
+    protected function encodeArray(): Array_
+    {
         $entries = [];
         while (true) {
             $token = $this->peekToken();
@@ -252,7 +260,8 @@ class Encoder {
     /**
      * Encode an object from a set_state call
      */
-    protected function encodeObject(string $prefix): Object_ {
+    protected function encodeObject(string $prefix): Object_
+    {
         $token = $this->getToken();
         if (!\is_array($token) || $token[0] !== \T_ARRAY) {
             throw $this->createUnexpectedTokenException('T_ARRAY', $token);

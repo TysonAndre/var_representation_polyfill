@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace VarRepresentation\Tests;
 
 use PHPUnit\Framework\TestCase;
-use VarRepresentation\Encoder;
 use stdClass;
+use VarRepresentation\Encoder;
 
 use function var_representation;
 
@@ -24,7 +24,8 @@ class VarRepresentationTest extends TestCase
     /**
      * @dataProvider varRepresentationProvider
      */
-    public function testVarRepresentation(string $expected, $value): void {
+    public function testVarRepresentation(string $expected, $value): void
+    {
         $this->assertVarRepresentationIs($expected, $value, VAR_REPRESENTATION_SINGLE_LINE);
     }
 
@@ -65,14 +66,16 @@ class VarRepresentationTest extends TestCase
     /**
      * @dataProvider varRepresentationIndentedProvider
      */
-    public function testVarRepresentationIndented(string $expected, $value): void {
+    public function testVarRepresentationIndented(string $expected, $value): void
+    {
         $this->assertVarRepresentationIs($expected, $value, 0);
     }
 
     /**
      * @dataProvider varRepresentationIndentedProvider
      */
-    public function testVarRepresentationCircular(string $expected, $value): void {
+    public function testVarRepresentationCircular(string $expected, $value): void
+    {
         $o = new stdClass();
         $o->o = $o;
         $o->other = 123;
@@ -138,7 +141,7 @@ EOT,
             ['\ArrayObject::__set_state([])', new \ArrayObject()],
             ['(object)[]', new \stdClass()],
             [
-<<<EOT
+            <<<EOT
 (object)[
     'key' => [],
     'other' => [

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * The MIT License (MIT)
  *
@@ -32,7 +35,8 @@ if (!function_exists('var_representation')) {
      * @param mixed $value
      * @param int $flags bitmask of flags (VAR_REPRESENTATION_SINGLE_LINE)
      */
-    function var_representation($value, int $flags = 0): string {
+    function var_representation($value, int $flags = 0): string
+    {
         return Encoder::toVarRepresentation($value, $flags);
     }
 }

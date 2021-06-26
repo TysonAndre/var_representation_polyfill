@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VarRepresentation\Node;
 
 use VarRepresentation\Node;
@@ -7,12 +9,14 @@ use VarRepresentation\Node;
 /**
  * Represents an array literal
  */
-class Array_ extends Node {
+class Array_ extends Node
+{
     /** @var list<ArrayEntry> the list of nodes (keys and optional values) in the array */
     public $entries;
 
     /** @param list<ArrayEntry> $entries the list of nodes (keys and optional values) in the array */
-    public function __construct(array $entries) {
+    public function __construct(array $entries)
+    {
         $this->entries = $entries;
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VarRepresentation\Node;
 
 use RuntimeException;
@@ -8,14 +10,16 @@ use VarRepresentation\Node;
 /**
  * A group of 1 or more strings/nodes
  */
-class Group extends Node {
+class Group extends Node
+{
     /** @var list<string|Node> the parts, e.g. '-' '1' */
     protected $parts;
 
     /**
      * @param list<string|node> $parts
      */
-    public function __construct(array $parts) {
+    public function __construct(array $parts)
+    {
         if (\count($parts) === 0) {
             throw new RuntimeException(__METHOD__ . ' passed no parts');
         }

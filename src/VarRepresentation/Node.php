@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VarRepresentation;
 
 /**
  * Represents an expression
  */
-abstract class Node {
+abstract class Node
+{
     /** Convert this to a single line string */
-    public abstract function __toString(): string;
+    abstract public function __toString(): string;
     /**
      * Convert this to an indented string
      */
-    public abstract function toIndentedString(int $depth): string;
+    abstract public function toIndentedString(int $depth): string;
 }
