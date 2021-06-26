@@ -9,9 +9,9 @@ use VarRepresentation\Node;
  */
 class ArrayEntry extends Node {
     /** @var Node the key  */
-    protected $key;
+    public $key;
     /** @var Node the value  */
-    protected $value;
+    public $value;
 
     public function __construct(Node $key, Node $value) {
         $this->key = $key;

@@ -9,17 +9,36 @@ use VarRepresentation\Node;
  */
 class Array_ extends Node {
     /** @var list<ArrayEntry> the list of nodes (keys and optional values) in the array */
-    protected $entries;
+    public $entries;
 
     /** @param list<ArrayEntry> $entries the list of nodes (keys and optional values) in the array */
     public function __construct(array $entries) {
         $this->entries = $entries;
     }
 
+    /**
+     * If this is a list, returns only the nodes for values.
+     * If this is not a list, returns the entries with keys and values.
+     *
+     * @return list<ArrayEntry>|list<Node>
+     */
+    public function getValuesOrEntries(): array
+    {
+        $values = [];
+        foreach ($this->entries as $i => $entry) {
+            if ($entry->key->__toString() !== (string)$i) {
+                // not a list
+                return $this->entries;
+            }
+            $values[] = $entry->value;
+        }
+        return $values;
+    }
+
     public function __toString(): string
     {
         // TODO check if list
-        $inner = implode(', ', $this->entries);
+        $inner = implode(', ', $this->getValuesOrEntries());
         return '[' . $inner . ']';
     }
 }

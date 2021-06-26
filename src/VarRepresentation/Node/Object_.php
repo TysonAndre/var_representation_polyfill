@@ -23,6 +23,9 @@ class Object_ extends Node {
 
     public function __toString(): string
     {
-        return $this->prefix . $this->array->__toString() . $this->suffix;
+        if ($this->prefix === 'stdClass::__set_state(') {
+            return '(object)' . $this->array;
+        }
+        return '\\' . $this->prefix . $this->array->__toString() . $this->suffix;
     }
 }

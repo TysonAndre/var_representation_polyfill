@@ -23,7 +23,7 @@ class VarRepresentationTest extends TestCase
      * @dataProvider varRepresentationProvider
      */
     public function testVarRepresentation(string $expected, $value): void {
-        $this->assertSame($expected, var_representation($value));
+        $this->assertVarRepresentationIs($expected, $value);
     }
 
     /**
@@ -45,9 +45,14 @@ class VarRepresentationTest extends TestCase
             ['"\\000\\000"', "\0\0"],
             ["'\$var'", '$var'],
             ['[]', []],
-            ['ArrayObject::__set_state([])', new \ArrayObject()],
-            // ['(object)[]', new \stdClass()],
-            // ['[1]', [1]],
+            ['null', STDIN],
+            ["[['key' => 'value']]", [['key' => 'value']]],
+            ['[1]', [1]],
+            ['[1, 2]', [1, 2]],
+            ['[-1 => 1]', [-1 => 1]],
+            ["['key' => 'value']", ['key' => 'value']],
+            ['\ArrayObject::__set_state([])', new \ArrayObject()],
+            ['(object)[]', new \stdClass()],
         ];
     }
 }

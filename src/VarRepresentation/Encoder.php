@@ -95,8 +95,14 @@ class Encoder {
         while (true) {
             $token = $this->peekToken();
             if (is_string($token)) {
-                if ($token === ')' || $token === ',') {
-                    throw new RuntimeException("Unexpected token '$token', expected expression");
+                if ($token === ',') {
+                    if (!$values) {
+                        throw new RuntimeException("Unexpected token '$token', expected expression in $this->raw at token #$this->i");
+                    }
+                    break;
+                }
+                if ($token === ')') {
+                    throw new RuntimeException("Unexpected token '$token', expected expression in $this->raw at token #$this->i");
                 }
                 $this->i++;
                 if ($token === '(') {
@@ -107,35 +113,36 @@ class Encoder {
             } else {
                 $this->i++;
                 // TODO: Handle PHP_INT_MIN as a multi-part expression, strings, etc
-                if (is_array($token)) {
-                    switch ($token[0]) {
-                        case T_CONSTANT_ENCAPSED_STRING;
-                            $values[] = $this->encodeString($token[1]);
-                            break;
-                        case T_ARRAY;
+                switch ($token[0]) {
+                    case T_DOUBLE_ARROW:
+                        $this->i--;
+                        break 2;
+                    case T_CONSTANT_ENCAPSED_STRING:
+                        $values[] = $this->encodeString($token[1]);
+                        break;
+                    case T_ARRAY:
+                        $next = $this->getToken();
+                        if ($next !== '(') {
+                            throw $this->createUnexpectedTokenException("'('", $next);
+                        }
+                        $values[] = $this->encodeArray();
+                        break;
+                    case T_STRING:
+                        switch ($token[1]) {
+                        case 'NULL';
+                            $values[] = 'null';
+                            break 2;
+                            /*
+                        case 'stdClass':
+                            // $this->encodeLegacyStdClass();
                             $next = $this->getToken();
-                            if ($next !== '(') {
-                                throw $this->createUnexpectedTokenException("'('", $next);
+                            if ($next !== T_DOUBLE_COLON) {
+                                throw $this->createUnexpectedTokenException("'::'", $next);
                             }
-                            $values[] = $this->encodeArray();
-                            break;
-                        case T_STRING;
-                            switch ($token[1]) {
-                            case 'NULL';
-                                $values[] = 'null';
-                                break 2;
-                                /*
-                            case 'stdClass':
-                                // $this->encodeLegacyStdClass();
-                                $next = $this->getToken();
-                                if ($next !== T_DOUBLE_COLON) {
-                                    throw $this->createUnexpectedTokenException("'::'", $next);
-                                }
-                                 */
-                            }
-                        default:
-                            $values[] = $token[1];
-                    }
+                             */
+                        }
+                    default:
+                        $values[] = $token[1];
                 }
             }
             if ($this->i >= $this->endIndex) {
@@ -207,7 +214,7 @@ class Encoder {
             }
             $key = $this->encodeValue();
             $token = $this->getToken();
-            if ($token !== '=>') {
+            if (!is_array($token) || $token[0] !== T_DOUBLE_ARROW) {
                 throw $this->createUnexpectedTokenException("'=>'", $token);
             }
             $value = $this->encodeValue();
