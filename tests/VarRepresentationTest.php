@@ -85,9 +85,9 @@ EOT;
     /**
      * @dataProvider varRepresentationIndentedProvider
      */
-    public function testVarRepresentationIndented(string $expected, $value): void
+    public function testVarRepresentationIndented(string $expected, $value, int $flags = 0): void
     {
-        $this->assertVarRepresentationIs($expected, $value, 0);
+        $this->assertVarRepresentationIs($expected, $value, $flags);
     }
 
     /**
@@ -105,8 +105,14 @@ EOT;
             ['false', false],
             ["''", ''],
             ["'1'", '1'],
+            ["'1'", '1', VAR_REPRESENTATION_UNESCAPED],
             ['"\\x00"', "\0"],
             ['"\\x00\\x00"', "\0\0"],
+            ["'\0'", "\0", VAR_REPRESENTATION_UNESCAPED],
+            ["['\0' => '\n']", ["\0" => "\n"], VAR_REPRESENTATION_UNESCAPED|VAR_REPRESENTATION_SINGLE_LINE],
+            ["'\0\0'", "\0\0", VAR_REPRESENTATION_UNESCAPED],
+            ["'\n\r\$'", "\n\r\$", VAR_REPRESENTATION_UNESCAPED],
+            ["'\\'\\\\'", "'\\", VAR_REPRESENTATION_UNESCAPED],
             ["'\$var'", '$var'],
             ['[]', []],
             ['null', STDIN],
