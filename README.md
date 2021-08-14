@@ -37,7 +37,7 @@ php > echo var_representation(['a', 'b', 'c'], VAR_REPRESENTATION_SINGLE_LINE);
 php > echo var_representation("uses double quotes: \$\"'\\\n");
 "uses double quotes: \$\"'\\\n"
 
-// Can disable the escaping of control characters as of polyfill version 0.0.3
+// Can disable the escaping of control characters as of polyfill version 0.1.0
 // (e.g. if the return value needs to be escaped again)
 php > echo var_representation("has\nnewlines", VAR_REPRESENTATION_UNESCAPED);
 'has
