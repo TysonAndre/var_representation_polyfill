@@ -54,8 +54,8 @@ class Array_ extends Node
         }
         $representation = "[\n";
         foreach ($parts as $part) {
-            $representation .= \str_repeat('    ', $depth + 1) . $part->toIndentedString($depth + 1) . ",\n";
+            $representation .= \str_repeat('  ', $depth + 1) . $part->toIndentedString($depth + 1) . ",\n";
         }
-        return $representation . \str_repeat('    ', $depth) . "]";
+        return $representation . \str_repeat('  ', $depth) . "]";
     }
 }

@@ -18,7 +18,8 @@ class VarRepresentationTest extends TestCase
 {
     public function assertVarRepresentationIs(string $expected, $value, int $flags): void
     {
-        $this->assertSame($expected, Encoder::toVarRepresentation($value, $flags));
+        $this->assertSame($expected, Encoder::toVarRepresentation($value, $flags), 'unexpected result for Encoder::toVarRepresentation');
+        $this->assertSame($expected, @var_representation($value, $flags), 'unexpected result for var_representation (possibly the native version)');
     }
 
     /**
@@ -62,8 +63,23 @@ class VarRepresentationTest extends TestCase
                 '"\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !\"#\$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\x7f"',
                 "\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !\"#\$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\x7f",
             ],
-            ['(object)[]', new \stdClass()],
+            ['(object) []', new \stdClass()],
         ];
+    }
+
+    public function testVarRepresentationCircular(): void
+    {
+        $o = new stdClass();
+        $o->o = $o;
+        $o->other = 123;
+        $expected = <<<EOT
+(object) [
+  'o' => null,
+  'other' => 123,
+]
+EOT;
+        $this->assertSame($expected, @var_representation($o));
+        $this->assertSame("(object) ['o' => null, 'other' => 123]", @var_representation($o, VAR_REPRESENTATION_SINGLE_LINE));
     }
 
     /**
@@ -72,24 +88,6 @@ class VarRepresentationTest extends TestCase
     public function testVarRepresentationIndented(string $expected, $value): void
     {
         $this->assertVarRepresentationIs($expected, $value, 0);
-    }
-
-    /**
-     * @dataProvider varRepresentationIndentedProvider
-     */
-    public function testVarRepresentationCircular(string $expected, $value): void
-    {
-        $o = new stdClass();
-        $o->o = $o;
-        $o->other = 123;
-        $expected = <<<EOT
-(object)[
-    'o' => null,
-    'other' => 123,
-]
-EOT;
-        $this->assertSame($expected, @var_representation($o));
-        $this->assertSame("(object)['o' => null, 'other' => 123]", @var_representation($o, VAR_REPRESENTATION_SINGLE_LINE));
     }
 
     /**
@@ -115,9 +113,9 @@ EOT;
             [
                 <<<EOT
 [
-    [
-        'key' => 'value',
-    ],
+  [
+    'key' => 'value',
+  ],
 ]
 EOT
                 , [['key' => 'value']]
@@ -125,7 +123,7 @@ EOT
             [
                 <<<EOT
 [
-    1,
+  1,
 ]
 EOT
                 , [1],
@@ -133,28 +131,28 @@ EOT
             [
                 <<<EOT
 [
-    [
-        1,
-        [],
-    ],
+  [
+    1,
+    [],
+  ],
 ]
 EOT
                 , [[1,[]]],
             ],
             ['\ArrayObject::__set_state([])', new \ArrayObject()],
-            ['(object)[]', new \stdClass()],
+            ['(object) []', new \stdClass()],
             [
             <<<EOT
-(object)[
-    'key' => [],
-    'other' => [
-        (object)[
-            'x' => -1,
-        ],
+(object) [
+  'key' => [],
+  'other' => [
+    (object) [
+      'x' => -1,
     ],
+  ],
 ]
 EOT
-                , (object)['key' => [], 'other' => [(object)['x' => -1]]],
+                , (object) ['key' => [], 'other' => [(object) ['x' => -1]]],
             ],
         ];
     }

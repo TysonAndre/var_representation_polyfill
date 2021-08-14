@@ -21,7 +21,7 @@ class Object_ extends Node
     public function __construct(string $prefix, Array_ $array, string $suffix)
     {
         if ($prefix === 'stdClass::__set_state(') {
-            $this->prefix = '(object)';
+            $this->prefix = '(object) ';
             $this->suffix = '';
         } else {
             $this->prefix = '\\' . $prefix;
@@ -33,7 +33,7 @@ class Object_ extends Node
     public function __toString(): string
     {
         if ($this->prefix === 'stdClass::__set_state(') {
-            return '(object)' . $this->array;
+            return '(object) ' . $this->array;
         }
         return $this->prefix . $this->array->__toString() . $this->suffix;
     }
