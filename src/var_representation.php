@@ -33,7 +33,8 @@ if (!function_exists('var_representation')) {
      * Convert a variable to a string in a way that fixes the shortcomings of `var_export()`.
      *
      * @param mixed $value
-     * @param int $flags bitmask of flags (VAR_REPRESENTATION_SINGLE_LINE)
+     * @param int $flags bitmask of flags (VAR_REPRESENTATION_SINGLE_LINE, VAR_REPRESENTATION_UNESCAPED)
+     * @suppress PhanRedefineFunctionInternal this is a polyfill
      */
     function var_representation($value, int $flags = 0): string
     {
@@ -42,4 +43,7 @@ if (!function_exists('var_representation')) {
 }
 if (!defined('VAR_REPRESENTATION_SINGLE_LINE')) {
     define('VAR_REPRESENTATION_SINGLE_LINE', 1);
+}
+if (!defined('VAR_REPRESENTATION_UNESCAPED')) {
+    define('VAR_REPRESENTATION_UNESCAPED', 2);
 }

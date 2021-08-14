@@ -6,6 +6,7 @@ RUN apt-get update && \
 	apt-get install -y zlib1g-dev libzip-dev && \
 	docker-php-ext-configure zip && \
 	docker-php-ext-install -j$(nproc) zip
+# Install php-ast to analyze this project with phan
 RUN pecl install ast && \
 	docker-php-ext-enable ast
 
