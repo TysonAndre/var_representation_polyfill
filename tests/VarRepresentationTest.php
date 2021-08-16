@@ -170,6 +170,7 @@ EOT
     {
         $this->assertSame($expected_double_quoted, Encoder::encodeRawStringDoubleQuoted($raw));
         $this->assertSame($expected_quoted ?? $expected_double_quoted, Encoder::encodeRawString($raw));
+        $this->assertSame($expected_quoted ?? $expected_double_quoted, var_representation($raw));
     }
 
     /**
@@ -182,6 +183,8 @@ EOT
             ['"a"', "'a'", 'a'],
             ['"\$\""', "'$\"'", '$"'],
             ['"\x00"', null, "\0"],
+            ['"\x7f"', null, "\x7f"],
+            ['"▜"', "'▜'", "▜"],
         ];
     }
 
