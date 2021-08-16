@@ -24,7 +24,7 @@ class Object_ extends Node
             $this->prefix = '(object) ';
             $this->suffix = '';
         } else {
-            $this->prefix = '\\' . $prefix;
+            $this->prefix = \PHP_VERSION_ID >= 80200 ? $prefix : '\\' . $prefix;
             $this->suffix = $suffix;
         }
         $this->array = $array;
