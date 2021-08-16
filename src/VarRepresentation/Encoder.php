@@ -211,7 +211,7 @@ class Encoder
             }
             $unescaped_str .= self::unescapeStringRepresentation($token[1]);
         }
-        if (!\preg_match('/[\\x00-\\x1f\\x7f-\xff]/', $unescaped_str)) {
+        if (!\preg_match('/[\\x00-\\x1f\\x7f]/', $unescaped_str)) {
             // This does not have '"\0"', so it is already a single quoted string
             return new Group([$prefix]);
         }
@@ -230,7 +230,7 @@ class Encoder
      */
     public static function encodeRawString(string $raw): string
     {
-        if (!\preg_match('/[\\x00-\\x1f\\x7f-\xff]/', $raw)) {
+        if (!\preg_match('/[\\x00-\\x1f\\x7f]/', $raw)) {
             // This does not have '"\0"', so var_export will return a single quoted string
             return \var_export($raw, true);
         }
@@ -244,7 +244,7 @@ class Encoder
     public static function encodeRawStringDoubleQuoted(string $raw): string
     {
         return '"' . \preg_replace_callback(
-            '/[\\x00-\\x1f\\x7f-\xff\\\\"$]/',
+            '/[\\x00-\\x1f\\x7f\\\\"$]/',
             /** @param array{0:string} $match */
             static function (array $match): string {
                 $char = $match[0];
