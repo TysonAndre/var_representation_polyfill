@@ -7,4 +7,7 @@
 /phpcs.xml         export-ignore
 /phpunit.xml       export-ignore
 /tests             export-ignore
+/ci                export-ignore
 /.editorconfig     export-ignore
+/.dockerignore     export-ignore
+/.phan/            export-ignore
