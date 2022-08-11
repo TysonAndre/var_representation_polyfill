@@ -11,7 +11,8 @@ RUN pecl install ast && \
 	docker-php-ext-enable ast
 
 ADD composer.json composer.lock ./
-RUN composer install --prefer-dist
+# Work around https://getcomposer.org/doc/articles/troubleshooting.md#dependencies-on-the-root-package
+RUN COMPOSER_ROOT_VERSION=0.1.2 composer install --prefer-dist
 ADD src ./src
 ADD .phan ./.phan
 ADD tests ./tests
