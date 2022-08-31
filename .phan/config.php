@@ -536,7 +536,7 @@ return [
         'DuplicateArrayKeyPlugin',
         'PregRegexCheckerPlugin',
         'PrintfCheckerPlugin',
-        'PHPUnitAssertionPlugin',  // analyze assertSame/assertInstanceof/assertTrue/assertFalse
+        // 'PHPUnitAssertionPlugin',  // analyze assertSame/assertInstanceof/assertTrue/assertFalse
         'UseReturnValuePlugin',
 
         // UnknownElementTypePlugin warns about unknown types in element signatures.
