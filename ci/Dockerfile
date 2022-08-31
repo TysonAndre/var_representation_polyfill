@@ -12,7 +12,7 @@ RUN pecl install ast && \
 
 ADD composer.json composer.lock ./
 # Work around https://getcomposer.org/doc/articles/troubleshooting.md#dependencies-on-the-root-package
-RUN COMPOSER_ROOT_VERSION=0.1.2 composer install --prefer-dist
+RUN COMPOSER_ROOT_VERSION=0.1.3 composer install --prefer-dist
 ADD src ./src
 ADD .phan ./.phan
 ADD tests ./tests
